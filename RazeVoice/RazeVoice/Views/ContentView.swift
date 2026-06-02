@@ -47,6 +47,9 @@ struct ContentView: View {
                     }
                 }
             }
+            recorder.onPermissionDenied = {
+                service.status = "Microphone permission denied"
+            }
         }
         .onDisappear {
             if recorder.isRecording {

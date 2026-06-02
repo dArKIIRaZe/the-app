@@ -15,8 +15,35 @@ class AudioRecorder: ObservableObject, @unchecked Sendable {
                                         interleaved: true)!
 
     var onData: ((Data) -> Void)?
+    var onPermissionDenied: (() -> Void)?
+
+    func requestPermission(thenStart: Bool = false) {
+        let session = AVAudioSession.sharedInstance()
+        switch session.recordPermission {
+        case .granted:
+            if thenStart { startRecording() }
+        case .denied:
+            DispatchQueue.main.async { self.onPermissionDenied?() }
+        case .undetermined:
+            session.requestRecordPermission { granted in
+                DispatchQueue.main.async {
+                    if granted && thenStart {
+                        self.startRecording()
+                    } else if !granted {
+                        self.onPermissionDenied?()
+                    }
+                }
+            }
+        @unknown default:
+            break
+        }
+    }
 
     func start() {
+        requestPermission(thenStart: true)
+    }
+
+    private func startRecording() {
         buffer.removeAll()
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
