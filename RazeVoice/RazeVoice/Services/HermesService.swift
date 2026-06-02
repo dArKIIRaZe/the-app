@@ -7,7 +7,7 @@ class HermesService: ObservableObject {
 
     var baseURL: String = "https://voice.razetech.co.uk"
 
-    func send(audio: Data, completion: @escaping (Result<Data, Error>) -> Void) {
+    func send(audio: Data, completion: @escaping @Sendable (Result<Data, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/chat") else {
             completion(.failure(NSError(domain: "Raze", code: 1, userInfo: [NSLocalizedDescriptionKey: "Bad URL"])))
             return

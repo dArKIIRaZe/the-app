@@ -64,10 +64,12 @@ class AudioRecorder: ObservableObject {
 
             meterTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
                 guard let self = self else { return }
-                self.recorder?.updateMeters()
-                let db = self.recorder?.averagePower(forChannel: 0) ?? -160
-                let linear = pow(10, db / 20)
-                self.power = min(1.0, max(0.0, linear * 10))
+                Task { @MainActor in
+                    self.recorder?.updateMeters()
+                    let db = self.recorder?.averagePower(forChannel: 0) ?? -160
+                    let linear = pow(10, db / 20)
+                    self.power = min(1.0, max(0.0, linear * 10))
+                }
             }
         } catch {
             print("RazeVoice: Recorder init error - \(error)")

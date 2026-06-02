@@ -34,7 +34,7 @@ class AudioPlayer: ObservableObject {
     }
 }
 
-class PlayerDelegate: NSObject, AVAudioPlayerDelegate {
+class PlayerDelegate: NSObject, AVAudioPlayerDelegate, @unchecked Sendable {
     static let shared = PlayerDelegate()
     var onFinish: (() -> Void)?
 
