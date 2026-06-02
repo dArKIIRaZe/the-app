@@ -43,7 +43,7 @@ class AudioRecorder: ObservableObject {
             try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
             try session.setActive(true)
         } catch {
-            print("RazeVoice: AudioSession error \u2013 \(error)")
+            print("RazeVoice: AudioSession error - \(error)")
             return
         }
 
@@ -70,7 +70,7 @@ class AudioRecorder: ObservableObject {
                 self.power = min(1.0, max(0.0, linear * 10))
             }
         } catch {
-            print("RazeVoice: Recorder init error \u2013 \(error)")
+            print("RazeVoice: Recorder init error - \(error)")
             isRecording = false
         }
     }
@@ -87,7 +87,7 @@ class AudioRecorder: ObservableObject {
             onData?(data)
             try? FileManager.default.removeItem(at: recordingURL)
         } catch {
-            print("RazeVoice: Read recording error \u2013 \(error)")
+            print("RazeVoice: Read recording error - \(error)")
         }
 
         try? AVAudioSession.sharedInstance().setActive(false)
