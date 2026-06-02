@@ -6,9 +6,6 @@ targets:
     deploymentTarget: "18.0"
     sources:
       - path: RazeVoice
-        excludes:
-          - "Preview Content/Preview Assets.xcassets"
-      - path: RazeVoice/Preview Content
     resources:
       - RazeVoice/Assets.xcassets
     settings:
