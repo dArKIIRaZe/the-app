@@ -1,7 +1,8 @@
 import AVFoundation
 import Combine
 
-class AudioRecorder: ObservableObject, @unchecked Sendable {
+@MainActor
+class AudioRecorder: ObservableObject {
     @Published var isRecording = false
     @Published var power: Float = 0.0
 
@@ -13,20 +14,20 @@ class AudioRecorder: ObservableObject, @unchecked Sendable {
     var onData: ((Data) -> Void)?
     var onPermissionDenied: (() -> Void)?
 
-    func requestPermission(thenStart: Bool = false) {
-        let session = AVAudioSession.sharedInstance()
-        switch session.recordPermission {
+    func start() {
+        let status = AVAudioApplication.shared.recordPermission
+        switch status {
         case .granted:
-            if thenStart { beginRecording() }
+            beginRecording()
         case .denied:
-            DispatchQueue.main.async { self.onPermissionDenied?() }
+            onPermissionDenied?()
         case .undetermined:
-            session.requestRecordPermission { [weak self] granted in
-                DispatchQueue.main.async {
-                    guard let self = self else { return }
-                    if granted && thenStart {
+            AVAudioApplication.requestRecordPermission { [weak self] granted in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    if granted {
                         self.beginRecording()
-                    } else if !granted {
+                    } else {
                         self.onPermissionDenied?()
                     }
                 }
@@ -36,17 +37,13 @@ class AudioRecorder: ObservableObject, @unchecked Sendable {
         }
     }
 
-    func start() {
-        requestPermission(thenStart: true)
-    }
-
     private func beginRecording() {
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
             try session.setActive(true)
         } catch {
-            print("RazeVoice: AudioSession error – \(error)")
+            print("RazeVoice: AudioSession error \u2013 \(error)")
             return
         }
 
@@ -73,7 +70,7 @@ class AudioRecorder: ObservableObject, @unchecked Sendable {
                 self.power = min(1.0, max(0.0, linear * 10))
             }
         } catch {
-            print("RazeVoice: Recorder init error – \(error)")
+            print("RazeVoice: Recorder init error \u2013 \(error)")
             isRecording = false
         }
     }
@@ -90,7 +87,7 @@ class AudioRecorder: ObservableObject, @unchecked Sendable {
             onData?(data)
             try? FileManager.default.removeItem(at: recordingURL)
         } catch {
-            print("RazeVoice: Read recording error – \(error)")
+            print("RazeVoice: Read recording error \u2013 \(error)")
         }
 
         try? AVAudioSession.sharedInstance().setActive(false)

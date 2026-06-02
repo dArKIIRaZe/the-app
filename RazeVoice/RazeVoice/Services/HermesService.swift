@@ -1,14 +1,13 @@
 import Foundation
 import Combine
 
-class HermesService: ObservableObject, @unchecked Sendable {
+@MainActor
+class HermesService: ObservableObject {
     @Published var status: String = "Idle"
 
-    // CHANGE THIS to your relay server address
-    // Example: "https://voice.razetech.co.uk" or "https://relay.razetech.co.uk"
     var baseURL: String = "https://voice.razetech.co.uk"
 
-    func send(audio: Data, completion: @escaping @Sendable (Result<Data, Error>) -> Void) {
+    func send(audio: Data, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/chat") else {
             completion(.failure(NSError(domain: "Raze", code: 1, userInfo: [NSLocalizedDescriptionKey: "Bad URL"])))
             return
@@ -29,11 +28,10 @@ class HermesService: ObservableObject, @unchecked Sendable {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
 
-        DispatchQueue.main.async { self.status = "Sending..." }
+        status = "Sending..."
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+            DispatchQueue.main.async {
                 if let error = error {
                     self.status = "Error: \(error.localizedDescription)"
                     completion(.failure(error))
