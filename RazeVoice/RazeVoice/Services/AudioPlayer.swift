@@ -33,9 +33,9 @@ class AudioPlayer: ObservableObject, @unchecked Sendable {
     }
 }
 
-class PlayerDelegate: NSObject, AVAudioPlayerDelegate {
+class PlayerDelegate: NSObject, AVAudioPlayerDelegate, @unchecked Sendable {
     static let shared = PlayerDelegate()
-    var onFinish: (() -> Void)?
+    var onFinish: (@Sendable () -> Void)?
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         onFinish?()
