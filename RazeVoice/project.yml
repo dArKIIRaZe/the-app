@@ -1,0 +1,30 @@
+name: RazeVoice
+targets:
+  RazeVoice:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: RazeVoice
+        excludes:
+          - "Preview Content/Preview Assets.xcassets"
+      - path: RazeVoice/Preview Content
+    resources:
+      - RazeVoice/Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.uk.razetech.RazeVoice
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGNING_ALLOWED: NO
+        SWIFT_VERSION: "6.0"
+      configs:
+        Release:
+          CODE_SIGN_IDENTITY: ""
+          CODE_SIGNING_REQUIRED: NO
+          CODE_SIGNING_ALLOWED: NO
+    info:
+      path: RazeVoice/Info.plist
+      properties:
+        CFBundleDisplayName: RazeVoice
+        UILaunchStoryboardName: ""
