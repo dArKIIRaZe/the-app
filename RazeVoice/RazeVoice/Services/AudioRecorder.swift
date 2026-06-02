@@ -1,7 +1,7 @@
 import AVFoundation
 import Combine
 
-class AudioRecorder: ObservableObject {
+class AudioRecorder: ObservableObject, @unchecked Sendable {
     @Published var isRecording = false
     @Published var power: Float = 0.0
 

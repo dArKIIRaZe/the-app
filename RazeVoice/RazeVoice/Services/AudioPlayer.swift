@@ -1,7 +1,7 @@
 import AVFoundation
 import Combine
 
-class AudioPlayer: ObservableObject {
+class AudioPlayer: ObservableObject, @unchecked Sendable {
     @Published var isPlaying = false
 
     private var player: AVAudioPlayer?
@@ -33,9 +33,9 @@ class AudioPlayer: ObservableObject {
     }
 }
 
-class PlayerDelegate: NSObject, AVAudioPlayerDelegate, @unchecked Sendable {
+class PlayerDelegate: NSObject, AVAudioPlayerDelegate {
     static let shared = PlayerDelegate()
-    var onFinish: (@Sendable () -> Void)?
+    var onFinish: (() -> Void)?
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         onFinish?()
