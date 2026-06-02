@@ -6,5 +6,7 @@
     <string>RazeVoice</string>
     <key>UILaunchStoryboardName</key>
     <string></string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>RazeVoice needs microphone access to listen for your voice commands.</string>
 </dict>
 </plist>
