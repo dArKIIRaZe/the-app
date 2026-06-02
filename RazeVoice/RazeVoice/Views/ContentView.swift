@@ -47,9 +47,6 @@ struct ContentView: View {
                     }
                 }
             }
-            if isAutoListen && !recorder.isRecording {
-                recorder.start()
-            }
         }
         .onDisappear {
             if recorder.isRecording {
