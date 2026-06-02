@@ -21,7 +21,8 @@ targets:
           CODE_SIGNING_REQUIRED: NO
           CODE_SIGNING_ALLOWED: NO
     info:
-      path: RazeVoice/Info.plist
       properties:
         CFBundleDisplayName: RazeVoice
-        UILaunchStoryboardName: ""
+        NSMicrophoneUsageDescription: "RazeVoice needs microphone access to listen for your voice commands."
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
